@@ -122,10 +122,10 @@ public class H264Stream extends VideoStream {
 		createCamera();
 		updateCamera();
 		try {
-			if (mQuality.resX>=640) {
-				// Using the MediaCodec API with the buffer method for high resolutions is too slow
-				mMode = MODE_MEDIARECORDER_API;
-			}
+//			if (mQuality.resX>=640) {
+//				// Using the MediaCodec API with the buffer method for high resolutions is too slow
+//				mMode = MODE_MEDIARECORDER_API;
+//			}
 			EncoderDebugger debugger = EncoderDebugger.debug(mSettings, mQuality.resX, mQuality.resY);
 			return new MP4Config(debugger.getB64SPS(), debugger.getB64PPS());
 		} catch (Exception e) {
@@ -136,6 +136,7 @@ public class H264Stream extends VideoStream {
 		}
 	}
 
+<<<<<<< HEAD
 	// Should not be called by the UI thread
 	private MP4Config testMediaRecorderAPI() throws RuntimeException, IOException {
 		String key = PREF_PREFIX+"h264-mr-"+mRequestedQuality.framerate+","+mRequestedQuality.resX+","+mRequestedQuality.resY;
@@ -148,6 +149,26 @@ public class H264Stream extends VideoStream {
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 			throw new StorageUnavailableException("No external storage or external storage not ready !");
 		}
+=======
+    @SuppressLint("NewApi")
+    private MP4Config testMediaCodecAPI() throws RuntimeException, IOException {
+        createCamera();
+        updateCamera();
+        try {
+//            if (mQuality.resX >= 640) {
+//                // Using the MediaCodec API with the buffer method for high resolutions is too slow
+//                mMode = MODE_MEDIARECORDER_API;
+//            }
+            EncoderDebugger debugger = EncoderDebugger.debug(mSettings, mQuality.resX, mQuality.resY);
+            return new MP4Config(debugger.getB64SPS(), debugger.getB64PPS());
+        } catch (Exception e) {
+            // Fallback on the old net.majorkernelpanic.streaming method using the MediaRecorder API
+            Log.e(TAG, "Resolution not supported with the MediaCodec API, we fallback on the old streamign method.");
+            mMode = MODE_MEDIARECORDER_API;
+            return testH264();
+        }
+    }
+>>>>>>> cedaa67 (取消分辨率大于640时修改编译模式)
 
 		final String TESTFILE = Environment.getExternalStorageDirectory().getPath()+"/spydroid-test.mp4";
 		
